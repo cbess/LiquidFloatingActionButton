@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "LiquidFloatingActionButton"
-  s.version          = "0.1.2"
+  s.version          = "1.2.0"
   s.summary          = "Material Design Floating Action Button in liquid state"
 
 # This description is used to generate tags and improve search results.
@@ -31,9 +31,9 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes/**/*'
-  s.resource_bundles = {
-    'LiquidFloatingActionButton' => ['Pod/Assets/*.png']
-  }
+  # s.resource_bundles = {
+  #   'LiquidFloatingActionButton' => ['Pod/Assets/*.png']
+  # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'

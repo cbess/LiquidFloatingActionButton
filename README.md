@@ -14,7 +14,7 @@ This is also [spinner loader](https://github.com/yoavlt/LiquidLoader) components
 
 ## Features
 - [x] liquid animation
-- [x] easily custoizable
+- [x] easily customizable
 - [x] Objective-C compatible
 - [x] Swift2.0
 
@@ -53,8 +53,6 @@ or, if you use [Carthage](https://github.com/Carthage/Carthage), add the followi
 ```
 github "yoavlt/LiquidFloatingActionButton"
 ```
-
-Please use `swift-2.0` branch if you adopt latest Xcode.
 
 ## License
 
