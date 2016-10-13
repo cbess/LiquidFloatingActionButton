@@ -242,7 +242,8 @@ public class LiquidFloatingActionButton : UIView {
         
         // add background view
         backgroundView.alpha = 0
-        backgroundView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.5)
+        backgroundView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+        backgroundView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(backgroundViewTapped)))
     }
     
     public override func didMoveToSuperview() {
@@ -250,6 +251,10 @@ public class LiquidFloatingActionButton : UIView {
         
         backgroundView.frame = superview!.bounds
         backgroundView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+    }
+    
+    @objc private func backgroundViewTapped() {
+        close()
     }
 
     private func didTapped() {
