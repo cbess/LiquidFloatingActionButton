@@ -10,17 +10,18 @@ import Foundation
 import QuartzCore
 
 // LiquidFloatingButton DataSource methods
-@objc public protocol LiquidFloatingActionButtonDataSource {
-    func numberOfCells(liquidFloatingActionButton: LiquidFloatingActionButton) -> Int
-    func cellForIndex(index: Int) -> LiquidFloatingCell
+public protocol LiquidFloatingActionButtonDataSource: class {
+    func numberOfCells(actionButton: LiquidFloatingActionButton) -> Int
+    func liquidFloatingActionButton(_ actionButton: LiquidFloatingActionButton, cellForIndex index: Int) -> LiquidFloatingCell
 }
 
 @objc public protocol LiquidFloatingActionButtonDelegate {
-    // selected method
-    optional func liquidFloatingActionButton(liquidFloatingActionButton: LiquidFloatingActionButton, didSelectItemAtIndex index: Int)
+    /// Tells the delegate that the specified cell was selected
+    optional func liquidFloatingActionButton(actionButton: LiquidFloatingActionButton, didSelectItemAtIndex index: Int)
 }
 
-public enum LiquidFloatingActionButtonAnimateStyle : Int {
+/// Specifies the direction of the stack animation
+public enum LiquidFloatingActionButtonAnimateStyle: Int {
     case Up
     case Right
     case Left
@@ -28,9 +29,10 @@ public enum LiquidFloatingActionButtonAnimateStyle : Int {
 }
 
 @IBDesignable
-public class LiquidFloatingActionButton : UIView {
+public class LiquidFloatingActionButton: UIView {
 
     private let internalRadiusRatio: CGFloat = 20.0 / 56.0
+    /// The cell radius ratio, the larger the number the larger the button
     public var cellRadiusRatio: CGFloat = 0.38
     public var animateStyle: LiquidFloatingActionButtonAnimateStyle = .Up {
         didSet {
@@ -42,8 +44,16 @@ public class LiquidFloatingActionButton : UIView {
             setNeedsDisplay()
         }
     }
+    /// The plus rotation animation duration, defaults to 0.8
+    public var plusRotationDuration: CFTimeInterval = 0.8
+    /// The open animation duration, defaults to 0.2
+    public var openDuration: CGFloat = 0.2
+    /// The close animation duration, defaults to 0.2
+    public var closeDuration: CGFloat = 0.2
+    /// The overlay view color, this will be displayed when opened, removed when closed
+    public var overlayViewColor: UIColor? = UIColor.whiteColor().colorWithAlphaComponent(0.7)
 
-    public weak var delegate:   LiquidFloatingActionButtonDelegate?
+    public weak var delegate: LiquidFloatingActionButtonDelegate?
     public weak var dataSource: LiquidFloatingActionButtonDataSource?
 
     public var responsible = true
@@ -78,7 +88,7 @@ public class LiquidFloatingActionButton : UIView {
 
     private var baseView = CircleLiquidBaseView()
     private let liquidView = UIView()
-    private let backgroundView = UIView()
+    private let overlayView = UIView()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -91,7 +101,7 @@ public class LiquidFloatingActionButton : UIView {
     }
 
     private func insertCell(cell: LiquidFloatingCell) {
-        cell.color  = self.color
+        cell.color = self.color
         cell.radius = self.frame.width * cellRadiusRatio
         cell.center = self.center.minus(self.frame.origin)
         cell.actionButton = self
@@ -101,8 +111,8 @@ public class LiquidFloatingActionButton : UIView {
     private func cellArray() -> [LiquidFloatingCell] {
         var result = [LiquidFloatingCell]()
         if let source = dataSource {
-            for i in 0..<source.numberOfCells(self) {
-                result.append(source.cellForIndex(i))
+            for idx in 0..<source.numberOfCells(self) {
+                result.append(source.liquidFloatingActionButton(self, cellForIndex: idx))
             }
         }
         return result
@@ -112,7 +122,7 @@ public class LiquidFloatingActionButton : UIView {
     public func open() {
 
         // rotate plus icon
-        CATransaction.setAnimationDuration(0.8)
+        CATransaction.setAnimationDuration(plusRotationDuration)
         self.plusLayer.transform = CATransform3DMakeRotation((CGFloat(M_PI) * rotationDegrees) / 180, 0, 0, 1)
 
         let cells = cellArray()
@@ -120,10 +130,10 @@ public class LiquidFloatingActionButton : UIView {
             insertCell(cell)
         }
         
-        // show bg view
-        superview?.insertSubview(backgroundView, belowSubview: self)
+        // show overlay view
+        superview?.insertSubview(overlayView, belowSubview: self)
         UIView.animateWithDuration(NSTimeInterval(baseView.openDuration)) {
-            self.backgroundView.alpha = 1
+            self.overlayView.alpha = 1
         }
         
         self.baseView.open(cells)
@@ -135,13 +145,14 @@ public class LiquidFloatingActionButton : UIView {
     public func close() {
 
         // rotate plus icon
-        CATransaction.setAnimationDuration(0.8)
+        CATransaction.setAnimationDuration(plusRotationDuration)
         self.plusLayer.transform = CATransform3DMakeRotation(0, 0, 0, 1)
 
+        // hide overlay view
         UIView.animateWithDuration(NSTimeInterval(baseView.closeDuration), animations: {
-            self.backgroundView.alpha = 0
+            self.overlayView.alpha = 0
         }, completion: { (finished) in
-            self.backgroundView.removeFromSuperview()
+            self.overlayView.removeFromSuperview()
         })
         
         self.baseView.close(cellArray())
@@ -227,6 +238,8 @@ public class LiquidFloatingActionButton : UIView {
         self.clipsToBounds = false
 
         baseView.setup(self)
+        baseView.openDuration = openDuration
+        baseView.closeDuration = closeDuration
         addSubview(baseView)
 
         liquidView.frame = baseView.frame
@@ -240,20 +253,20 @@ public class LiquidFloatingActionButton : UIView {
         circleLayer.addSublayer(plusLayer)
         plusLayer.frame = circleLayer.bounds
         
-        // add background view
-        backgroundView.alpha = 0
-        backgroundView.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.7)
-        backgroundView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(backgroundViewTapped)))
+        // add overlay view
+        overlayView.alpha = 0
+        overlayView.backgroundColor = overlayViewColor
+        overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayViewTapped)))
     }
     
     public override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
-        backgroundView.frame = superview!.bounds
-        backgroundView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
+        overlayView.frame = superview!.bounds
+        overlayView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
     }
     
-    @objc private func backgroundViewTapped() {
+    @objc private func overlayViewTapped() {
         close()
     }
 
@@ -266,13 +279,15 @@ public class LiquidFloatingActionButton : UIView {
     }
 
     public func didTappedCell(target: LiquidFloatingCell) {
-        if let _ = dataSource {
-            let cells = cellArray()
-            for i in 0..<cells.count {
-                let cell = cells[i]
-                if target === cell {
-                    delegate?.liquidFloatingActionButton?(self, didSelectItemAtIndex: i)
-                }
+        guard dataSource != nil else {
+            return
+        }
+
+        let cells = cellArray()
+        for idx in 0..<cells.count {
+            let cell = cells[idx]
+            if target === cell {
+                delegate?.liquidFloatingActionButton?(self, didSelectItemAtIndex: idx)
             }
         }
     }
@@ -297,8 +312,8 @@ class ActionBarBaseView : UIView {
 
 class CircleLiquidBaseView : ActionBarBaseView {
 
-    let openDuration: CGFloat = 0.2
-    let closeDuration: CGFloat = 0.2
+    var openDuration: CGFloat = 0.2
+    var closeDuration: CGFloat = 0.2
     let viscosity: CGFloat = 0.65
     var animateStyle: LiquidFloatingActionButtonAnimateStyle = .Up
     var color: UIColor = UIColor(red: 82 / 255.0, green: 112 / 255.0, blue: 235 / 255.0, alpha: 1.0) {
