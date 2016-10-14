@@ -297,6 +297,7 @@ public class LiquidFloatingActionButton: UIView {
 class ActionBarBaseView : UIView {
     var opening = false
     func setup(actionButton: LiquidFloatingActionButton) {
+        // empty
     }
 
     func translateY(layer: CALayer, duration: CFTimeInterval, f: (CABasicAnimation) -> ()) {
@@ -355,7 +356,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
 
     func open(cells: [LiquidFloatingCell]) {
         stop()
-        displayLink = CADisplayLink(target: self, selector: #selector(CircleLiquidBaseView.didDisplayRefresh(_:)))
+        displayLink = CADisplayLink(target: self, selector: #selector(didDisplayRefresh(_:)))
         displayLink?.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
         opening = true
         for cell in cells {
@@ -368,7 +369,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
     func close(cells: [LiquidFloatingCell]) {
         stop()
         opening = false
-        displayLink = CADisplayLink(target: self, selector: #selector(CircleLiquidBaseView.didDisplayRefresh(_:)))
+        displayLink = CADisplayLink(target: self, selector: #selector(didDisplayRefresh(_:)))
         displayLink?.addToRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
         for cell in cells {
             cell.layer.removeAllAnimations()
@@ -391,7 +392,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
     }
 
     func update(delay: CGFloat, duration: CGFloat, f: (LiquidFloatingCell, Int, CGFloat) -> ()) {
-        if openingCells.isEmpty {
+        guard !openingCells.isEmpty else {
             return
         }
 
@@ -528,8 +529,8 @@ public class LiquidFloatingCell : LiquittableCircle {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setup(image: UIImage, tintColor: UIColor = UIColor.whiteColor()) {
-        imageView.image = image.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate)
+    func setup(image: UIImage, tintColor: UIColor = .whiteColor()) {
+        imageView.image = image.imageWithRenderingMode(.AlwaysTemplate)
         imageView.tintColor = tintColor
         setupView(imageView)
     }
