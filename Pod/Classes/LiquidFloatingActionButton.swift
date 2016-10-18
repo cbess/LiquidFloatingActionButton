@@ -51,7 +51,7 @@ public class LiquidFloatingActionButton: UIView {
     /// The close animation duration, defaults to 0.2
     public var closeDuration: CGFloat = 0.2
     /// The overlay view color, this will be displayed when opened, removed when closed
-    public var overlayViewColor: UIColor? = UIColor.whiteColor().colorWithAlphaComponent(0.7)
+    public var overlayViewColor: UIColor?
 
     public weak var delegate: LiquidFloatingActionButtonDelegate?
     public weak var dataSource: LiquidFloatingActionButtonDataSource?
@@ -88,7 +88,11 @@ public class LiquidFloatingActionButton: UIView {
 
     private var baseView = CircleLiquidBaseView()
     private let liquidView = UIView()
-    private let overlayView = UIView()
+    private let overlayView: UIVisualEffectView = ({
+        let effect = UIBlurEffect(style: .Light)
+        let view = UIVisualEffectView(effect: effect)
+        return view
+    })()
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -128,6 +132,10 @@ public class LiquidFloatingActionButton: UIView {
         let cells = cellArray()
         for cell in cells {
             insertCell(cell)
+        }
+        
+        if let color = overlayViewColor {
+            overlayView.backgroundColor = overlayViewColor
         }
         
         // show overlay view
@@ -255,7 +263,6 @@ public class LiquidFloatingActionButton: UIView {
         
         // add overlay view
         overlayView.alpha = 0
-        overlayView.backgroundColor = overlayViewColor
         overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayViewTapped)))
     }
     
