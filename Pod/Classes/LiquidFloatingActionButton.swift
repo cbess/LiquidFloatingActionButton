@@ -136,6 +136,7 @@ public class LiquidFloatingActionButton: UIView {
         }
         
         // show overlay view
+        overlayView.alpha = 0
         superview?.insertSubview(overlayView, belowSubview: self)
         UIView.animateWithDuration(NSTimeInterval(baseView.openDuration)) {
             self.overlayView.alpha = 1
@@ -258,8 +259,7 @@ public class LiquidFloatingActionButton: UIView {
         circleLayer.addSublayer(plusLayer)
         plusLayer.frame = circleLayer.bounds
         
-        // add overlay view
-        overlayView.alpha = 0
+        // update overlay view
         overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayViewTapped)))
     }
     
