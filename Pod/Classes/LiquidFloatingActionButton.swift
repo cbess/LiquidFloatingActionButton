@@ -135,8 +135,12 @@ public class LiquidFloatingActionButton: UIView {
             insertCell(cell)
         }
         
-        // show overlay view
+        // resize overlay as needed
+        overlayView.frame = superview!.bounds
+        overlayView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
         overlayView.alpha = 0
+        
+        // show overlay view
         superview?.insertSubview(overlayView, belowSubview: self)
         UIView.animateWithDuration(NSTimeInterval(baseView.openDuration)) {
             self.overlayView.alpha = 1
@@ -261,13 +265,6 @@ public class LiquidFloatingActionButton: UIView {
         
         // update overlay view
         overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayViewTapped)))
-    }
-    
-    public override func didMoveToSuperview() {
-        super.didMoveToSuperview()
-        
-        overlayView.frame = superview!.bounds
-        overlayView.autoresizingMask = [.FlexibleHeight, .FlexibleWidth]
     }
     
     @objc private func overlayViewTapped() {
