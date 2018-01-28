@@ -33,11 +33,11 @@ extension CALayer {
 
 class CGMath {
     static func radToDeg(_ rad: CGFloat) -> CGFloat {
-        return rad * 180 / CGFloat(M_PI)
+        return rad * 180 / CGFloat.pi
     }
     
     static func degToRad(_ deg: CGFloat) -> CGFloat {
-        return deg * CGFloat(M_PI) / 180
+        return deg * CGFloat.pi / 180
     }
     
     static func circlePoint(_ center: CGPoint, radius: CGFloat, rad: CGFloat) -> CGPoint {

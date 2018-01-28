@@ -70,7 +70,7 @@ class SimpleCircleLiquidEngine {
     fileprivate func circleConnectedPoint(_ circle: LiquittableCircle, other: LiquittableCircle) -> (CGPoint, CGPoint) {
         var ratio = circleRatio(circle, other: other)
         ratio = (ratio + ConnectThresh) / (1.0 + ConnectThresh)
-        let angle = CGFloat(M_PI_2) * angleOpen * ratio
+        let angle = CGFloat.pi / 2 * angleOpen * ratio
         return circleConnectedPoint(circle, other: other, angle: angle)
     }
 

@@ -80,11 +80,7 @@ open class LiquidFloatingActionButton: UIView {
     @IBInspectable open var rotationDegrees: CGFloat = 45.0
     
     /// The overlay view, this will be displayed when opened, removed when closed
-    open let overlayView: UIVisualEffectView = ({
-        let effect = UIBlurEffect(style: .light)
-        let view = UIVisualEffectView(effect: effect)
-        return view
-    })()
+    open let overlayView = UIVisualEffectView()
     
     fileprivate var plusLayer = CAShapeLayer()
     fileprivate let circleLayer = CAShapeLayer()
@@ -128,7 +124,7 @@ open class LiquidFloatingActionButton: UIView {
 
         // rotate plus icon
         CATransaction.setAnimationDuration(plusRotationDuration)
-        self.plusLayer.transform = CATransform3DMakeRotation((CGFloat(M_PI) * rotationDegrees) / 180, 0, 0, 1)
+        self.plusLayer.transform = CATransform3DMakeRotation((CGFloat(Double.pi) * rotationDegrees) / 180, 0, 0, 1)
 
         let cells = cellArray()
         for cell in cells {
@@ -138,12 +134,12 @@ open class LiquidFloatingActionButton: UIView {
         // resize overlay as needed
         overlayView.frame = superview!.bounds
         overlayView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
-        overlayView.alpha = 0
+        overlayView.effect = nil
         
         // show overlay view
         superview?.insertSubview(overlayView, belowSubview: self)
         UIView.animate(withDuration: TimeInterval(baseView.openDuration), animations: {
-            self.overlayView.alpha = 1
+            self.overlayView.effect = UIBlurEffect(style: .light)
         }) 
         
         self.baseView.open(cells)
@@ -160,7 +156,7 @@ open class LiquidFloatingActionButton: UIView {
 
         // hide overlay view
         UIView.animate(withDuration: TimeInterval(baseView.closeDuration), animations: {
-            self.overlayView.alpha = 0
+            self.overlayView.effect = nil
         }, completion: { (finished) in
             self.overlayView.removeFromSuperview()
         })
@@ -392,7 +388,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
         }
     }
 
-    func update(_ delay: CGFloat, duration: CGFloat, f: (LiquidFloatingCell, Int, CGFloat) -> ()) {
+    func update(_ delay: CGFloat, duration: CGFloat, handler: (LiquidFloatingCell, Int, CGFloat) -> ()) {
         guard !openingCells.isEmpty else {
             return
         }
@@ -413,16 +409,16 @@ class CircleLiquidBaseView : ActionBarBaseView {
             let liquidCell = openingCells[i]
             let cellDelay = CGFloat(delay) * CGFloat(i)
             let ratio = easeInEaseOut((t - cellDelay) / duration)
-            f(liquidCell, i, ratio)
+            handler(liquidCell, i, ratio)
         }
 
         if let firstCell = openingCells.first {
-            bigEngine?.push(baseLiquid!, other: firstCell)
+            _ = bigEngine?.push(baseLiquid!, other: firstCell)
         }
         for i in 1..<openingCells.count {
             let prev = openingCells[i - 1]
             let cell = openingCells[i]
-            engine?.push(prev, other: cell)
+            _ = engine?.push(prev, other: cell)
         }
         engine?.draw(baseLiquid!)
         bigEngine?.draw(baseLiquid!)
