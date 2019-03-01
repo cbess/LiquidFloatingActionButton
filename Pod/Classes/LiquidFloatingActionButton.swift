@@ -80,7 +80,7 @@ open class LiquidFloatingActionButton: UIView {
     @IBInspectable open var rotationDegrees: CGFloat = 45.0
     
     /// The overlay view, this will be displayed when opened, removed when closed
-    open let overlayView = UIVisualEffectView()
+    public let overlayView = UIVisualEffectView()
     
     fileprivate var plusLayer = CAShapeLayer()
     fileprivate let circleLayer = CAShapeLayer()
@@ -177,7 +177,7 @@ open class LiquidFloatingActionButton: UIView {
 
         // draw plus shape
         let plusLayer = CAShapeLayer()
-        plusLayer.lineCap = kCALineCapRound
+        plusLayer.lineCap = CAShapeLayerLineCap.round
         plusLayer.strokeColor = UIColor.white.cgColor
         plusLayer.lineWidth = 3.0
 
@@ -300,9 +300,9 @@ class ActionBarBaseView : UIView {
     func translateY(_ layer: CALayer, duration: CFTimeInterval, f: (CABasicAnimation) -> ()) {
         let translate = CABasicAnimation(keyPath: "transform.translation.y")
         f(translate)
-        translate.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
+        translate.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         translate.isRemovedOnCompletion = false
-        translate.fillMode = kCAFillModeForwards
+        translate.fillMode = CAMediaTimingFillMode.forwards
         translate.duration = duration
         layer.add(translate, forKey: "transYAnim")
     }
@@ -354,7 +354,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
     func open(_ cells: [LiquidFloatingCell]) {
         stop()
         displayLink = CADisplayLink(target: self, selector: #selector(didDisplayRefresh(_:)))
-        displayLink?.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
+        displayLink?.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
         opening = true
         for cell in cells {
             cell.layer.removeAllAnimations()
@@ -367,7 +367,7 @@ class CircleLiquidBaseView : ActionBarBaseView {
         stop()
         opening = false
         displayLink = CADisplayLink(target: self, selector: #selector(didDisplayRefresh(_:)))
-        displayLink?.add(to: RunLoop.current, forMode: RunLoopMode.commonModes)
+        displayLink?.add(to: RunLoop.current, forMode: RunLoop.Mode.common)
         for cell in cells {
             cell.layer.removeAllAnimations()
             cell.layer.eraseShadow()

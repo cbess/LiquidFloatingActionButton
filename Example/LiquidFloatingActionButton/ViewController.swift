@@ -42,7 +42,7 @@ open class CustomDrawingActionButton: LiquidFloatingActionButton {
     override open func createPlusLayer(_ frame: CGRect) -> CAShapeLayer {
         
         let plusLayer = CAShapeLayer()
-        plusLayer.lineCap = kCALineCapRound
+        plusLayer.lineCap = CAShapeLayerLineCap.round
         plusLayer.strokeColor = UIColor.white.cgColor
         plusLayer.lineWidth = 3.0
         
