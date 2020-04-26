@@ -105,6 +105,7 @@ class ViewController: UIViewController, LiquidFloatingActionButtonDataSource, Li
         
         let floatingFrame2 = CGRect(x: 16, y: 16, width: 56, height: 56)
         let topLeftButton = createButton(floatingFrame2, .down)
+        topLeftButton.rotationDegrees = 0
 
         self.view.addSubview(bottomRightButton)
         self.view.addSubview(topLeftButton)

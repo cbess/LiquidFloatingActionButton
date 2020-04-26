@@ -8,6 +8,4 @@ end
 
 target 'LiquidFloatingActionButton_Tests' do
   pod "LiquidFloatingActionButton", :path => "../"
-
-  
 end
