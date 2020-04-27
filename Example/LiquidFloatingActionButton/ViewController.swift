@@ -40,7 +40,6 @@ open class CustomCell : LiquidFloatingCell {
 open class CustomDrawingActionButton: LiquidFloatingActionButton {
     
     override open func createPlusLayer(_ frame: CGRect) -> CAShapeLayer {
-        
         let plusLayer = CAShapeLayer()
         plusLayer.lineCap = CAShapeLayerLineCap.round
         plusLayer.strokeColor = UIColor.white.cgColor
@@ -75,7 +74,6 @@ class ViewController: UIViewController, LiquidFloatingActionButtonDataSource, Li
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.view.backgroundColor = UIColor(red: 55 / 255.0, green: 55 / 255.0, blue: 55 / 255.0, alpha: 1.0)
         // Do any additional setup after loading the view, typically from a nib.
         let createButton: (CGRect, LiquidFloatingActionButtonAnimateStyle) -> LiquidFloatingActionButton = { (frame, style) in
             let floatingActionButton = CustomDrawingActionButton(frame: frame)
@@ -89,10 +87,7 @@ class ViewController: UIViewController, LiquidFloatingActionButtonDataSource, Li
             let cell = LiquidFloatingCell(icon: UIImage(named: iconName)!)
             return cell
         }
-        /* let customCellFactory: (String) -> LiquidFloatingCell = { (iconName) in
-            let cell = CustomCell(icon: UIImage(named: iconName)!, name: iconName)
-            return cell
-        } */
+        
         cells.append(cellFactory("ic_cloud"))
         cells.append(cellFactory("ic_system"))
         cells.append(cellFactory("ic_place"))
@@ -101,10 +96,11 @@ class ViewController: UIViewController, LiquidFloatingActionButtonDataSource, Li
         let bottomRightButton = createButton(floatingFrame, .left)
         
         let image = UIImage(named: "ic_art")
-        bottomRightButton.image = image
+        bottomRightButton.setImage(image, gravity: .center)
         
         let floatingFrame2 = CGRect(x: 16, y: 16, width: 56, height: 56)
         let topLeftButton = createButton(floatingFrame2, .down)
+        topLeftButton.rotationDegrees = 0
 
         self.view.addSubview(bottomRightButton)
         self.view.addSubview(topLeftButton)

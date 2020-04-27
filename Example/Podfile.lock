@@ -7,7 +7,7 @@ DEPENDENCIES:
   - SnapKit (~> 4.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - SnapKit
 
 EXTERNAL SOURCES:
@@ -15,9 +15,9 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  LiquidFloatingActionButton: 593a9d461327aead2f0c380bf5427674fed17076
+  LiquidFloatingActionButton: 8c694f9d6f0ea44a4c31174efa934debb84079eb
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
 
 PODFILE CHECKSUM: a2c0c53e947994a6599a374878c3e83221756ed1
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.4

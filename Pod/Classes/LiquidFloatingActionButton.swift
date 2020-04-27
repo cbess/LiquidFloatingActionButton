@@ -32,6 +32,7 @@ public enum LiquidFloatingActionButtonAnimateStyle: Int {
 open class LiquidFloatingActionButton: UIView {
 
     fileprivate let internalRadiusRatio: CGFloat = 20.0 / 56.0
+    
     /// The cell radius ratio, the larger the number the larger the button
     open var cellRadiusRatio: CGFloat = 0.38
     open var animateStyle: LiquidFloatingActionButtonAnimateStyle = .up {
@@ -44,10 +45,13 @@ open class LiquidFloatingActionButton: UIView {
             setNeedsDisplay()
         }
     }
+    
     /// The plus rotation animation duration, defaults to 0.8
     open var plusRotationDuration: CFTimeInterval = 0.8
+    
     /// The open animation duration, defaults to 0.2
     open var openDuration: CGFloat = 0.2
+    
     /// The close animation duration, defaults to 0.2
     open var closeDuration: CGFloat = 0.2
 
@@ -68,6 +72,7 @@ open class LiquidFloatingActionButton: UIView {
         }
     }
 
+    /// The image to display, instead of the plus sign.
     @IBInspectable open var image: UIImage? {
         didSet {
             if image != nil {
@@ -76,7 +81,11 @@ open class LiquidFloatingActionButton: UIView {
             }
         }
     }
-
+    
+    /// A constant that specifies how the image contents are positioned or scaled within its bounds. Must be set before `image` is set.
+    public var imageGravity: CALayerContentsGravity = .resize
+    
+    /// The button's rotation degrees for the open state.
     @IBInspectable open var rotationDegrees: CGFloat = 45.0
     
     /// The overlay view, this will be displayed when opened, removed when closed
@@ -90,7 +99,6 @@ open class LiquidFloatingActionButton: UIView {
     fileprivate var baseView = CircleLiquidBaseView()
     fileprivate let liquidView = UIView()
     
-
     public override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -118,10 +126,14 @@ open class LiquidFloatingActionButton: UIView {
         }
         return result
     }
-
+    
+    public func setImage(_ image: UIImage?, gravity: CALayerContentsGravity = .resize) {
+        imageGravity = gravity
+        self.image = image
+    }
+    
     // open all cells
     open func open() {
-
         // rotate plus icon
         CATransaction.setAnimationDuration(plusRotationDuration)
         self.plusLayer.transform = CATransform3DMakeRotation((CGFloat(Double.pi) * rotationDegrees) / 180, 0, 0, 1)
