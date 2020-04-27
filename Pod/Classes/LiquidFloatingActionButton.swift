@@ -72,6 +72,7 @@ open class LiquidFloatingActionButton : UIView {
             }
         }
     }
+    
     /// A constant that specifies how the image contents are positioned or scaled within its bounds. Must be set before `image` is set.
     public var imageGravity: CALayerContentsGravity = .resize
     
@@ -112,6 +113,11 @@ open class LiquidFloatingActionButton : UIView {
             }
         }
         return result
+    }
+    
+    public func setImage(_ image: UIImage?, gravity: CALayerContentsGravity = .resize) {
+        imageGravity = gravity
+        self.image = image
     }
 
     // open all cells
