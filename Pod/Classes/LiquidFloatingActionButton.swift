@@ -77,6 +77,7 @@ open class LiquidFloatingActionButton: UIView {
         didSet {
             if image != nil {
                 plusLayer.contents = image!.cgImage
+                plusLayer.contentsGravity = imageGravity
                 plusLayer.path = nil
             }
         }
