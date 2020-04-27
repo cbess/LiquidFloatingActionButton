@@ -62,15 +62,20 @@ open class LiquidFloatingActionButton : UIView {
         }
     }
     
+    /// The image to display, instead of the plus sign.
     @IBInspectable open var image: UIImage? {
         didSet {
             if image != nil {
                 plusLayer.contents = image!.cgImage
+                plusLayer.contentsGravity = imageGravity
                 plusLayer.path = nil
             }
         }
     }
+    /// A constant that specifies how the image contents are positioned or scaled within its bounds. Must be set before `image` is set.
+    public var imageGravity: CALayerContentsGravity = .resize
     
+    /// The button's rotation degrees for the open state.
     @IBInspectable open var rotationDegrees: CGFloat = 45.0
 
     fileprivate var plusLayer   = CAShapeLayer()

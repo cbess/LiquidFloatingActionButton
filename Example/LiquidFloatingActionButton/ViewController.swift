@@ -75,7 +75,6 @@ class ViewController: UIViewController, LiquidFloatingActionButtonDataSource, Li
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.view.backgroundColor = UIColor(red: 55 / 255.0, green: 55 / 255.0, blue: 55 / 255.0, alpha: 1.0)
         // Do any additional setup after loading the view, typically from a nib.
         let createButton: (CGRect, LiquidFloatingActionButtonAnimateStyle) -> LiquidFloatingActionButton = { (frame, style) in
             let floatingActionButton = CustomDrawingActionButton(frame: frame)
