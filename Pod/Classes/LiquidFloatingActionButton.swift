@@ -87,7 +87,7 @@ open class LiquidFloatingActionButton: UIView {
     /// A constant that specifies how the image contents are positioned or scaled within its bounds. Must be set before `image` is set.
     public var imageGravity: CALayerContentsGravity = .resize
     
-    /// The button's rotation degrees for the open state.
+    /// The button's rotation degrees for the open state. Defaults to `45.0`.
     @IBInspectable open var rotationDegrees: CGFloat = 45.0
     
     /// The overlay view, this will be displayed when opened, removed when closed
@@ -110,7 +110,13 @@ open class LiquidFloatingActionButton: UIView {
         super.init(coder: aDecoder)
         setup()
     }
-
+    
+    open override func tintColorDidChange() {
+        super.tintColorDidChange()
+        
+        updatePlusLayer()
+    }
+    
     fileprivate func insertCell(_ cell: LiquidFloatingCell) {
         cell.color = self.color
         cell.radius = self.frame.width * cellRadiusRatio
@@ -163,7 +169,6 @@ open class LiquidFloatingActionButton: UIView {
 
     // close all cells
     open func close() {
-
         // rotate plus icon
         CATransaction.setAnimationDuration(plusRotationDuration)
         self.plusLayer.transform = CATransform3DMakeRotation(0, 0, 0, 1)
@@ -188,11 +193,10 @@ open class LiquidFloatingActionButton: UIView {
 
     /// create, configure & draw the plus layer (override and create your own shape in subclass!)
     open func createPlusLayer(_ frame: CGRect) -> CAShapeLayer {
-
         // draw plus shape
         let plusLayer = CAShapeLayer()
         plusLayer.lineCap = CAShapeLayerLineCap.round
-        plusLayer.strokeColor = UIColor.white.cgColor
+        plusLayer.strokeColor = tintColor.cgColor
         plusLayer.lineWidth = 3.0
 
         let path = UIBezierPath()
@@ -269,12 +273,22 @@ open class LiquidFloatingActionButton: UIView {
         liquidView.layer.addSublayer(circleLayer)
         circleLayer.frame = liquidView.layer.bounds
         
-        plusLayer = createPlusLayer(circleLayer.bounds)
-        circleLayer.addSublayer(plusLayer)
-        plusLayer.frame = circleLayer.bounds
+        updatePlusLayer()
         
         // update overlay view
         overlayView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(overlayViewTapped)))
+    }
+    
+    /// Updates the plus layer. Called after `tintColorDidChange`.
+    open func updatePlusLayer() {
+        guard image == nil else {
+            return
+        }
+        
+        plusLayer.removeFromSuperlayer()
+        plusLayer = createPlusLayer(circleLayer.bounds)
+        circleLayer.addSublayer(plusLayer)
+        plusLayer.frame = circleLayer.bounds
     }
     
     @objc fileprivate func overlayViewTapped() {
